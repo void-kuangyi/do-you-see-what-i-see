@@ -88,6 +88,8 @@ void rubbish(int brightness) {
 
 
 
+
+
 long mapBrightness(int value) {
   if (value > 40) {
     return 255;
@@ -99,21 +101,22 @@ long mapBrightness(int value) {
     //   Serial.println(number);
     // }
     // return number;
+
     return map(sq(value), 0, sq(40), 0, 255);
   }
 }
 
 void setLight(int values[]) {
-  name(mapBrightness(values[0])); //story/memory
-  religion(mapBrightness(values[1])); //identity 
-  people(mapBrightness(values[2])); //collectivity
-  kids(mapBrightness(values[3])); //activity
-  house(mapBrightness(values[4])); //apperance 
-  lamp(mapBrightness(values[5])); //comfort
-  space(mapBrightness(values[6])); //spatial
-  road(mapBrightness(values[7])); //infra
-  canal(mapBrightness(values[8])); //location
-  rubbish(mapBrightness(values[9])); //object
+  name(mapBrightness(values[0]));      //story/memory
+  religion(mapBrightness(values[1]));  //identity
+  people(mapBrightness(values[2]));    //collectivity
+  kids(mapBrightness(values[3]));      //activity
+  house(mapBrightness(values[4]));     //apperance
+  lamp(mapBrightness(values[5]));      //comfort
+  space(mapBrightness(values[6]));     //spatial
+  road(mapBrightness(values[7]));      //infra
+  canal(mapBrightness(values[8]));     //location
+  rubbish(mapBrightness(values[9]));   //object
 }
 
 void loop() {
@@ -160,6 +163,9 @@ void loop() {
     addArray(result, owners);
   }
 
+  for (int i = 0; i < 7; i++) {
+    result[i] = 2.5*sin(0.002*millis()) + result[i] ;
+  }
   setLight(result);
   FastLED.show();
 }
