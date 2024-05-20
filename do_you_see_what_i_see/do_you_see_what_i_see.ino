@@ -1,77 +1,119 @@
 #include <FastLED.h>
 
-#define LED_PIN 3
-#define NUM_LEDS 60
+#define NUM_STRIPS 3
+#define NUM_LEDS_PER_STRIP 30
+CRGB leds[NUM_STRIPS][NUM_LEDS_PER_STRIP];
 
-CRGB leds[NUM_LEDS];
+const int buttonPins[7] = { 5, 6, 7, 8, 9, 10, 11 };
+int buttonState[7] = { 0, 0, 0, 0, 0, 0, 0 };
+
+int fadeAmount = 5;
 
 void setup() {
   Serial.begin(9600);
-  FastLED.addLeds<WS2813, LED_PIN, GRB>(leds, NUM_LEDS);
+
+  FastLED.addLeds<WS2813, 4>(leds[0], NUM_LEDS_PER_STRIP);  // 0 -> blue
+  FastLED.addLeds<WS2813, 2>(leds[1], NUM_LEDS_PER_STRIP);  // 1 -> yellow
+  FastLED.addLeds<WS2813, 3>(leds[2], NUM_LEDS_PER_STRIP);  // 2 -> red
+
+  pinMode(5, INPUT_PULLUP);
+  pinMode(6, INPUT_PULLUP);
+  pinMode(7, INPUT_PULLUP);
+  pinMode(8, INPUT_PULLUP);
+  pinMode(9, INPUT_PULLUP);
+  pinMode(10, INPUT_PULLUP);
+  pinMode(11, INPUT_PULLUP);
 }
 
 void name(int brightness) {
+  leds[0][28] = CRGB(brightness, brightness, brightness);
+  leds[0][29] = CRGB(brightness, brightness, brightness);
 }
 
 void religion(int brightness) {
+  leds[0][22] = CRGB(brightness, brightness, brightness);
+  leds[0][23] = CRGB(brightness, brightness, brightness);
+  leds[0][24] = CRGB(brightness, brightness, brightness);
+
+  leds[0][16] = CRGB(brightness, brightness, brightness);
+  leds[0][17] = CRGB(brightness, brightness, brightness);
+  leds[0][18] = CRGB(brightness, brightness, brightness);
 }
 
 void people(int brightness) {
-  // leds[7] = CRGB(brightness, brightness, brightness);
+  leds[1][0] = CRGB(brightness, brightness, brightness);
 }
 
 void kids(int brightness) {
+  leds[1][29] = CRGB(brightness, brightness, brightness);
 }
 
 void house(int brightness) {
-  for (int i = 0; i <= 33; i++) {
-    leds[i] = CRGB(brightness, brightness, brightness);
+  // This inner loop will go over each led in the current strip, one at a time
+  for (int i = 0; i < 9; i++) {
+    leds[0][i] = CRGB(brightness, brightness, brightness);
   }
 }
 
 void lamp(int brightness) {
+  leds[1][26] = CRGB(brightness, brightness, brightness);
+  leds[2][8] = CRGB(brightness, brightness, brightness);
 }
 
 void space(int brightness) {
+  leds[2][12] = CRGB(brightness, brightness, brightness);
+  leds[2][13] = CRGB(brightness, brightness, brightness);
+  leds[2][14] = CRGB(brightness, brightness, brightness);
+
+  leds[2][17] = CRGB(brightness, brightness, brightness);
+  leds[2][18] = CRGB(brightness, brightness, brightness);
+  leds[2][19] = CRGB(brightness, brightness, brightness);
 }
 
 void road(int brightness) {
-  // for (int i = 15; i <= 22; i++) {
-  //   leds[i] = CRGB(brightness, brightness, brightness);
-  // }
+  for (int i = 18; i < 24; i++) {
+    leds[1][i] = CRGB(brightness, brightness, brightness);
+  }
 }
 
 void canal(int brightness) {
-  // for (int i = 9; i <= 14; i++) {
-  //   leds[i] = CRGB(brightness, brightness, brightness);
-  // }
+  for (int i = 10; i < 16; i++) {
+    leds[1][i] = CRGB(brightness, brightness, brightness);
+  }
 }
 
 void rubbish(int brightness) {
-  // leds[8] = CRGB(brightness, brightness, brightness);
+  leds[1][6] = CRGB(brightness, brightness, brightness);
 }
 
 
 
 long mapBrightness(int value) {
-  if (value >= 40) {
+  if (value > 40) {
     return 255;
   } else {
-  return map(value, 0, 40, 0, 255);
+    // double number = map(sqrt(value), 0, 40, 0, 255);
+    // double number = 40*sq(value/40.00);
+    // number = map(number, 0, 40, 0, 255);
+    // if (number != 0) {
+    //   Serial.println(number);
+    // }
+    // return number;
+    return map(sq(value), 0, sq(40), 0, 255);
   }
 }
 
 void setLight(int values[]) {
-  name(mapBrightness(values[0]));
-  religion(mapBrightness(values[1]));
-  people(mapBrightness(values[2]));
-  kids(mapBrightness(values[3]));
-  house(mapBrightness(values[4]));
-  lamp(mapBrightness(values[5]));
-  space(mapBrightness(values[6]));
-  road(mapBrightness(values[7]));
-  canal(mapBrightness(values[8]));
-  rubbish(mapBrightness(values[9]));
+  name(mapBrightness(values[0])); //story/memory
+  religion(mapBrightness(values[1])); //identity 
+  people(mapBrightness(values[2])); //collectivity
+  kids(mapBrightness(values[3])); //activity
+  house(mapBrightness(values[4])); //apperance 
+  lamp(mapBrightness(values[5])); //comfort
+  space(mapBrightness(values[6])); //spatial
+  road(mapBrightness(values[7])); //infra
+  canal(mapBrightness(values[8])); //location
+  rubbish(mapBrightness(values[9])); //object
 }
 
 void loop() {
@@ -83,20 +125,47 @@ void loop() {
   int makers[10] = { 11, 10, 3, 3, 3, 3, 25, 2, 1, 3 };
   int owners[10] = { 4, 21, 8, 11, 12, 8, 10, 5, 3, 3 };
 
-  int result[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  int result[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-  addArray(result, visitors);
+  for (int i = 0; i < 7; i++) {
+    buttonState[i] = digitalRead(buttonPins[i]);
+  }
+
+  if (buttonState[0] == 1) {
+    addArray(result, residents);
+    Serial.println("residents");
+  }
+
+  if (buttonState[1] == 1) {
+    addArray(result, visitors);
+  }
+
+  if (buttonState[2] == 1) {
+    addArray(result, professionals);
+  }
+
+  if (buttonState[3] == 1) {
+    addArray(result, governments);
+  }
+
+  if (buttonState[4] == 1) {
+    addArray(result, academics);
+  }
+
+  if (buttonState[5] == 1) {
+    addArray(result, makers);
+  }
+
+  if (buttonState[6] == 1) {
+    addArray(result, owners);
+  }
+
   setLight(result);
   FastLED.show();
 }
 
 void addArray(int* result, int array[]) {
   for (int i = 0; i <= 9; i++) {
-      result[i] = array[i] + result[i];
+    result[i] = array[i] + result[i];
   }
 }
-
-
-  // int test1[10] = { 0, 0, 40, 0, 40, 0, 0, 0, 0, 0 };
-  // int test2[10] = { 0, 0, 30, 0, 0, 0, 0, 255, 40, 0 };
-  // int test3[10] = { 50, 0, 50, 0, 0, 0, 0, 255, 40, 0 };
