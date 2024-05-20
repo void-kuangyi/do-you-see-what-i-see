@@ -129,6 +129,7 @@ void loop() {
   int owners[10] = { 4, 21, 8, 11, 12, 8, 10, 5, 3, 3 };
 
   int result[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  int resultWithFading[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
   for (int i = 0; i < 7; i++) {
     buttonState[i] = digitalRead(buttonPins[i]);
@@ -163,10 +164,11 @@ void loop() {
     addArray(result, owners);
   }
 
+
   for (int i = 0; i < 7; i++) {
-    result[i] = 2.5*sin(0.002*millis()) + result[i] ;
+    resultWithFading[i] = 2*sin(0.002*millis()) + result[i] ;
   }
-  setLight(result);
+  setLight(resultWithFading);
   FastLED.show();
 }
 
