@@ -109,19 +109,19 @@ void setLight(int values[]) {
   house(mapBrightness(values[4]));     //apperance
   lamp(mapBrightness(values[5]));      //comfort
   space(mapBrightness(values[6]));     //spatial.
-  road(mapBrightness(values[7]));     //infra
-  canal(mapBrightness(values[8]));    //location
-  rubbish(mapBrightness(values[9]));  //object
+  road(mapBrightness(values[7]));      //infra
+  canal(mapBrightness(values[8]));     //location
+  rubbish(mapBrightness(values[9]));   //object
 }
 
 void loop() {
-  int residents[10] = { 10, 10, 10, 22, 30, 10, 10, 30, 10, 10 };  //{ 1, 14, 4, 15, 20, 3, 10, 4, 0, 6 }
-  int visitors[10] = { 3, 5, 5, 5, 40, 1, 7, 2, 0, 1 };            //{ 3, 11, 5, 5, 40, 1, 7, 2, 0, 1 }
-  int professionals[10] = { 10, 21, 24, 29, 10, 3, 6, 5, 3, 5 };   //{ 6, 14, 16, 19, 15, 3, 6, 5, 3, 5 }
-  int governments[10] = { 5, 22, 10, 12, 3, 9, 9, 8, 4, 2 };       //{ 5, 15, 10, 12, 3, 9, 9, 8, 4, 2 }
-  int academics[10] = { 4, 30, 9, 5, 4, 4, 28.5, 4, 0, 2 };        //{ 4, 20, 9, 5, 4, 4, 19, 4, 0, 2 }
-  int makers[10] = { 11, 10, 3, 3, 3, 3, 37, 2, 1, 3 };            // { 11, 10, 3, 3, 3, 3, 25, 2, 1, 3 }
-  int owners[10] = { 4, 31, 8, 11, 12, 8, 10, 5, 3, 3 };           //{ 4, 21, 8, 11, 12, 8, 10, 5, 3, 3 }
+  int residents[10] = { 0, 17, 0, 19, 23, 0, 15, 0, 0, 9 };     //{ 1, 14, 4, 15, 20, 3, 10, 4, 0, 6 }
+  int visitors[10] = { 0, 0, 0, 0, 40, 0, 0, 0, 0, 0 };         //{ 3, 11, 5, 5, 40, 1, 7, 2, 0, 1 }
+  int professionals[10] = { 8, 10, 19, 22, 0, 0, 0, 0, 0, 0 };  //{ 6, 14, 16, 19, 15, 3, 6, 5, 3, 5 }
+  int governments[10] = { 0, 22, 8, 11, 0, 0, 11, 11, 0, 0 };   //{ 5, 15, 10, 12, 3, 9, 9, 8, 4, 2 }
+  int academics[10] = { 0, 28, 13, 0, 0, 0, 25, 0, 0, 0 };      //{ 4, 20, 9, 5, 4, 4, 19, 4, 0, 2 }
+  int makers[10] = { 15, 10, 0, 0, 0, 0, 30, 0, 0, 0 };         // { 11, 10, 3, 3, 3, 3, 25, 2, 1, 3 }
+  int owners[10] = { 0, 24, 8, 11, 12, 12, 11, 0, 0, 0 };       //{ 4, 21, 8, 11, 12, 8, 10, 5, 3, 3 }
 
   int result[10] = { 0 };
   int resultWithFading[10] = { 0 };
@@ -160,14 +160,15 @@ void loop() {
   }
 
 
-  for (int lightIndex = 0; lightIndex < 10; lightIndex ++) {
-    if (result[lightIndex] >= 10) {
-      resultWithFading[lightIndex] = 2 * sin(0.002 * millis()) + result[lightIndex];
-    } else {
-      resultWithFading[lightIndex] = result[lightIndex];
-    }
+  for (int lightIndex = 0; lightIndex < 10; lightIndex++) {
+    resultWithFading[lightIndex] = 2 * sin(0.002 * millis()) + result[lightIndex];
   }
   setLight(resultWithFading);
+
+  for (int i = 0; i < 7; i++) {
+    Serial.print(result[i]);
+  }
+  Serial.println("");
   FastLED.show();
 }
 
