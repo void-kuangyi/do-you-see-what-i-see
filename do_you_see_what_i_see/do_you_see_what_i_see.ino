@@ -1,20 +1,19 @@
 #include <FastLED.h>
+#include <pixeltypes.h>
 
 #define NUM_STRIPS 3
 #define NUM_LEDS_PER_STRIP 30
 CRGB leds[NUM_STRIPS][NUM_LEDS_PER_STRIP];
 
 const int buttonPins[7] = { 5, 6, 7, 8, 9, 10, 11 };
-int buttonState[7] = { 0, 0, 0, 0, 0, 0, 0 };
-
-int fadeAmount = 5;
+int buttonState[7] = { 0 };
 
 void setup() {
   Serial.begin(9600);
 
-  FastLED.addLeds<WS2813, 4>(leds[0], NUM_LEDS_PER_STRIP);  // 0 -> blue
-  FastLED.addLeds<WS2813, 2>(leds[1], NUM_LEDS_PER_STRIP);  // 1 -> yellow
-  FastLED.addLeds<WS2813, 3>(leds[2], NUM_LEDS_PER_STRIP);  // 2 -> red
+  FastLED.addLeds<WS2813, 4>(leds[0], NUM_LEDS_PER_STRIP);  // 0 -> blue -> D4
+  FastLED.addLeds<WS2813, 2>(leds[1], NUM_LEDS_PER_STRIP);  // 1 -> yellow -> D2
+  FastLED.addLeds<WS2813, 3>(leds[2], NUM_LEDS_PER_STRIP);  // 2 -> red -> D3
 
   pinMode(5, INPUT_PULLUP);
   pinMode(6, INPUT_PULLUP);
@@ -26,8 +25,8 @@ void setup() {
 }
 
 void name(int brightness) {
+  leds[0][27] = CRGB(brightness, brightness, brightness);
   leds[0][28] = CRGB(brightness, brightness, brightness);
-  leds[0][29] = CRGB(brightness, brightness, brightness);
 }
 
 void religion(int brightness) {
@@ -41,7 +40,7 @@ void religion(int brightness) {
 }
 
 void people(int brightness) {
-  leds[1][0] = CRGB(brightness, brightness, brightness);
+  leds[1][1] = CRGB(brightness, brightness, brightness);
 }
 
 void kids(int brightness) {
@@ -49,7 +48,6 @@ void kids(int brightness) {
 }
 
 void house(int brightness) {
-  // This inner loop will go over each led in the current strip, one at a time
   for (int i = 0; i < 9; i++) {
     leds[0][i] = CRGB(brightness, brightness, brightness);
   }
@@ -57,7 +55,7 @@ void house(int brightness) {
 
 void lamp(int brightness) {
   leds[1][26] = CRGB(brightness, brightness, brightness);
-  leds[2][8] = CRGB(brightness, brightness, brightness);
+  leds[2][9] = CRGB(brightness, brightness, brightness);
 }
 
 void space(int brightness) {
@@ -87,9 +85,6 @@ void rubbish(int brightness) {
 }
 
 
-
-
-
 long mapBrightness(int value) {
   if (value > 40) {
     return 255;
@@ -113,23 +108,23 @@ void setLight(int values[]) {
   kids(mapBrightness(values[3]));      //activity
   house(mapBrightness(values[4]));     //apperance
   lamp(mapBrightness(values[5]));      //comfort
-  space(mapBrightness(values[6]));     //spatial
-  road(mapBrightness(values[7]));      //infra
-  canal(mapBrightness(values[8]));     //location
-  rubbish(mapBrightness(values[9]));   //object
+  space(mapBrightness(values[6]));     //spatial.
+  road(mapBrightness(values[7]));     //infra
+  canal(mapBrightness(values[8]));    //location
+  rubbish(mapBrightness(values[9]));  //object
 }
 
 void loop() {
-  int residents[10] = { 1, 14, 4, 15, 20, 3, 10, 4, 0, 6 };
-  int visitors[10] = { 3, 11, 5, 5, 40, 1, 7, 2, 0, 1 };
-  int professionals[10] = { 6, 14, 16, 19, 15, 3, 6, 5, 3, 5 };
-  int governments[10] = { 5, 15, 10, 12, 3, 9, 9, 8, 4, 2 };
-  int academics[10] = { 4, 20, 9, 5, 4, 4, 19, 4, 0, 2 };
-  int makers[10] = { 11, 10, 3, 3, 3, 3, 25, 2, 1, 3 };
-  int owners[10] = { 4, 21, 8, 11, 12, 8, 10, 5, 3, 3 };
+  int residents[10] = { 10, 10, 10, 22, 30, 10, 10, 30, 10, 10 };  //{ 1, 14, 4, 15, 20, 3, 10, 4, 0, 6 }
+  int visitors[10] = { 3, 5, 5, 5, 40, 1, 7, 2, 0, 1 };            //{ 3, 11, 5, 5, 40, 1, 7, 2, 0, 1 }
+  int professionals[10] = { 10, 21, 24, 29, 10, 3, 6, 5, 3, 5 };   //{ 6, 14, 16, 19, 15, 3, 6, 5, 3, 5 }
+  int governments[10] = { 5, 22, 10, 12, 3, 9, 9, 8, 4, 2 };       //{ 5, 15, 10, 12, 3, 9, 9, 8, 4, 2 }
+  int academics[10] = { 4, 30, 9, 5, 4, 4, 28.5, 4, 0, 2 };        //{ 4, 20, 9, 5, 4, 4, 19, 4, 0, 2 }
+  int makers[10] = { 11, 10, 3, 3, 3, 3, 37, 2, 1, 3 };            // { 11, 10, 3, 3, 3, 3, 25, 2, 1, 3 }
+  int owners[10] = { 4, 31, 8, 11, 12, 8, 10, 5, 3, 3 };           //{ 4, 21, 8, 11, 12, 8, 10, 5, 3, 3 }
 
-  int result[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-  int resultWithFading[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  int result[10] = { 0 };
+  int resultWithFading[10] = { 0 };
 
   for (int i = 0; i < 7; i++) {
     buttonState[i] = digitalRead(buttonPins[i]);
@@ -165,15 +160,19 @@ void loop() {
   }
 
 
-  for (int i = 0; i < 7; i++) {
-    resultWithFading[i] = 2*sin(0.002*millis()) + result[i] ;
+  for (int lightIndex = 0; lightIndex < 10; lightIndex ++) {
+    if (result[lightIndex] >= 10) {
+      resultWithFading[lightIndex] = 2 * sin(0.002 * millis()) + result[lightIndex];
+    } else {
+      resultWithFading[lightIndex] = result[lightIndex];
+    }
   }
   setLight(resultWithFading);
   FastLED.show();
 }
 
 void addArray(int* result, int array[]) {
-  for (int i = 0; i <= 9; i++) {
+  for (int i = 0; i < 10; i++) {
     result[i] = array[i] + result[i];
   }
 }
